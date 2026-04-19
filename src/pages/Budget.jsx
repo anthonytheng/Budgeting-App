@@ -25,7 +25,7 @@ const actionButton = {
   padding: "6px 10px",
   borderRadius: 6,
   border: "1px solid var(--border)",
-  background: "rgba(255,255,255,0.06)",
+  background: "var(--surface-soft)",
   color: "var(--text)",
   cursor: "pointer",
   fontSize: 12,
@@ -61,7 +61,7 @@ const input = {
   padding: "10px 12px",
   borderRadius: 8,
   border: "1px solid var(--border)",
-  background: "rgba(9, 20, 36, 0.9)",
+  background: "var(--login-input-bg)",
   color: "var(--text)",
   fontSize: 14,
   marginTop: 8,
@@ -77,7 +77,7 @@ const label = {
 };
 
 const errorText = {
-  color: "#fca5a5",
+  color: "var(--danger)",
   fontSize: 12,
   marginTop: 8,
 };
@@ -456,7 +456,7 @@ export default function Budget() {
                       const progress = category.limit ? Math.min((total / category.limit) * 100, 100) : 0;
 
                       return (
-                        <div key={category.id} style={{ border: "1px solid rgba(255,255,255,0.04)", borderRadius: 12, overflow: "hidden", background: "rgba(255,255,255,0.02)" }}>
+                        <div key={category.id} style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden", background: "var(--surface-soft)" }}>
                           <div
                             style={{
                               padding: 12,
@@ -483,7 +483,7 @@ export default function Budget() {
 
                               <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
                                 <button style={actionButton} onClick={(e) => { e.stopPropagation(); openEditCategory(category); }}>Edit</button>
-                                <button style={{ ...actionButton, color: "#fca5a5" }} onClick={(e) => { e.stopPropagation(); handleDeleteCategory(category.id); }}>Delete</button>
+                                <button style={{ ...actionButton, color: "var(--danger)" }} onClick={(e) => { e.stopPropagation(); handleDeleteCategory(category.id); }}>Delete</button>
                               </div>
                             </div>
 
@@ -492,7 +492,7 @@ export default function Budget() {
                                 <span style={{ color: "var(--text-muted)" }}>${total.toFixed(2)}</span>
                                 <span style={{ color: "var(--text-muted)" }}>${category.limit.toFixed(2)}</span>
                               </div>
-                              <div style={{ height: 6, borderRadius: 999, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                              <div style={{ height: 6, borderRadius: 999, background: "var(--surface-soft)", border: "1px solid var(--border)", overflow: "hidden" }}>
                                 <div
                                   style={{
                                     width: `${progress}%`,
@@ -508,7 +508,7 @@ export default function Budget() {
                           {isExpanded && categoryTransactions.length > 0 && (
                             <div style={{ padding: "0 12px 12px", display: "grid", gap: 6 }}>
                               {categoryTransactions.map((transaction) => (
-                                <div key={transaction.id} style={{ padding: "10px 12px", borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.04)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+                                <div key={transaction.id} style={{ padding: "10px 12px", borderRadius: 10, background: "var(--surface)", border: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
                                   <div style={{ minWidth: 0 }}>
                                     <div style={{ fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{transaction.note}</div>
                                     <div style={{ color: "var(--text-muted)", fontSize: 12, marginTop: 3 }}>
@@ -518,7 +518,7 @@ export default function Budget() {
                                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                                     <div style={{ fontWeight: 700, color: "var(--danger)" }}>${transaction.amount.toFixed(2)}</div>
                                     <button style={actionButton} onClick={(e) => { e.stopPropagation(); openEditTransaction(transaction); }}>Edit</button>
-                                    <button style={{ ...actionButton, color: "#fca5a5" }} onClick={(e) => { e.stopPropagation(); handleDeleteTransaction(transaction.id); }}>Delete</button>
+                                    <button style={{ ...actionButton, color: "var(--danger)" }} onClick={(e) => { e.stopPropagation(); handleDeleteTransaction(transaction.id); }}>Delete</button>
                                   </div>
                                 </div>
                               ))}
@@ -550,13 +550,13 @@ export default function Budget() {
                           key={transaction.id}
                           style={{
                             padding: 12,
-                            background: "rgba(255,255,255,0.03)",
+                            background: "var(--surface-soft)",
                             borderRadius: 10,
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
                             gap: 12,
-                            border: "1px solid rgba(255,255,255,0.04)",
+                            border: "1px solid var(--border)",
                           }}
                         >
                           <div style={{ minWidth: 0 }}>
@@ -576,7 +576,7 @@ export default function Budget() {
                               Edit
                             </button>
                             <button
-                              style={{ ...actionButton, color: "#fca5a5" }}
+                              style={{ ...actionButton, color: "var(--danger)" }}
                               onClick={() => handleDeleteTransaction(transaction.id)}
                             >
                               Delete
@@ -620,7 +620,7 @@ export default function Budget() {
                 style={{
                   ...button,
                   background: "transparent",
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                 }}
                 onClick={() => setShowBudgetModal(false)}
               >
@@ -681,7 +681,7 @@ export default function Budget() {
                 style={{
                   ...button,
                   background: "transparent",
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                 }}
                 onClick={() => setShowCategoryModal(false)}
               >
@@ -782,7 +782,7 @@ export default function Budget() {
                 style={{
                   ...button,
                   background: "transparent",
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                 }}
                 onClick={() => setShowTransactionModal(false)}
               >
@@ -832,7 +832,7 @@ export default function Budget() {
                 style={{
                   ...button,
                   background: "transparent",
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                 }}
                 onClick={() => setShowEditBudgetModal(false)}
               >
@@ -893,7 +893,7 @@ export default function Budget() {
                 style={{
                   ...button,
                   background: "transparent",
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                 }}
                 onClick={() => setShowEditCategoryModal(false)}
               >
@@ -994,7 +994,7 @@ export default function Budget() {
                 style={{
                   ...button,
                   background: "transparent",
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                 }}
                 onClick={() => setShowEditTransactionModal(false)}
               >
@@ -1031,7 +1031,7 @@ export default function Budget() {
                   style={{
                     padding: 12,
                     background:
-                      currentBudget?.id === budget.id ? "rgba(77, 174, 203, 0.14)" : "rgba(255,255,255,0.03)",
+                      currentBudget?.id === budget.id ? "rgba(77, 174, 203, 0.14)" : "var(--surface-soft)",
                     borderRadius: 10,
                     cursor: "pointer",
                     fontWeight: currentBudget?.id === budget.id ? 700 : 400,
@@ -1039,7 +1039,7 @@ export default function Budget() {
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: 12,
-                    border: "1px solid rgba(255,255,255,0.04)",
+                    border: "1px solid var(--border)",
                   }}
                   onClick={() => {
                     selectBudget(budget);
@@ -1059,7 +1059,7 @@ export default function Budget() {
                       Edit
                     </button>
                     <button
-                      style={{ ...actionButton, color: "#fca5a5" }}
+                      style={{ ...actionButton, color: "var(--danger)" }}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteBudget(budget.id);

@@ -14,6 +14,12 @@
   --accent-strong: #4daecb;
   --danger: #f87171;
   --success: #22c55e;
+  --orb-a: rgba(90, 188, 214, 0.12);
+  --orb-b: rgba(77, 174, 203, 0.14);
+  --login-bg-start: #07101f;
+  --login-bg-mid: #0f1f39;
+  --login-bg-end: #122443;
+  --login-input-bg: rgba(8, 18, 33, 0.9);
 
   font-family: "Manrope", sans-serif;
   line-height: 1.5;
@@ -22,6 +28,28 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme="light"] {
+  --bg-0: #f0f5fa;
+  --bg-1: #e8f0f8;
+  --bg-2: #ddeaf5;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-strong: rgba(255, 255, 255, 0.98);
+  --surface-soft: rgba(0, 0, 0, 0.02);
+  --border: rgba(0, 0, 0, 0.1);
+  --text: #0f2035;
+  --text-muted: #4a6680;
+  --accent: #3a9ec0;
+  --accent-strong: #2d8aac;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --orb-a: rgba(58, 158, 192, 0.1);
+  --orb-b: rgba(45, 138, 172, 0.08);
+  --login-bg-start: #ddeaf5;
+  --login-bg-mid: #c8dff0;
+  --login-bg-end: #b8d4e8;
+  --login-input-bg: rgba(240, 247, 255, 0.95);
 }
 
 * {
@@ -37,8 +65,8 @@ body,
 
 body {
   background:
-    radial-gradient(circle at 12% 8%, rgba(90, 188, 214, 0.12), transparent 38%),
-    radial-gradient(circle at 85% 2%, rgba(77, 174, 203, 0.14), transparent 42%),
+    radial-gradient(circle at 12% 8%, var(--orb-a), transparent 38%),
+    radial-gradient(circle at 85% 2%, var(--orb-b), transparent 42%),
     linear-gradient(135deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
   color: var(--text);
 }
@@ -60,10 +88,6 @@ input,
 select,
 textarea {
   font: inherit;
-}
-
-button {
-  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 button:hover {

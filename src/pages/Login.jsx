@@ -87,7 +87,7 @@ const page = {
   alignItems: "center",
   padding: 24,
   background:
-    "radial-gradient(circle at 14% 12%, rgba(45, 212, 191, 0.2), transparent 36%), radial-gradient(circle at 82% 18%, rgba(56, 189, 248, 0.2), transparent 38%), linear-gradient(130deg, #07101f, #0f1f39 55%, #122443)",
+    "radial-gradient(circle at 14% 12%, var(--orb-a), transparent 36%), radial-gradient(circle at 82% 18%, var(--orb-b), transparent 38%), linear-gradient(130deg, var(--login-bg-start), var(--login-bg-mid) 55%, var(--login-bg-end))",
   color: "var(--text)",
   position: "relative",
   overflow: "hidden",
@@ -98,7 +98,7 @@ const orbA = {
   width: 280,
   height: 280,
   borderRadius: "50%",
-  background: "radial-gradient(circle, rgba(45, 212, 191, 0.2), rgba(45, 212, 191, 0))",
+  background: "radial-gradient(circle, var(--orb-a), transparent)",
   top: -80,
   right: -80,
 };
@@ -108,7 +108,7 @@ const orbB = {
   width: 340,
   height: 340,
   borderRadius: "50%",
-  background: "radial-gradient(circle, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0))",
+  background: "radial-gradient(circle, var(--orb-b), transparent)",
   left: -120,
   bottom: -120,
 };
@@ -120,7 +120,7 @@ const card = {
   border: "1px solid var(--border)",
   borderRadius: 20,
   padding: 24,
-  boxShadow: "0 24px 52px rgba(0,0,0,0.38)",
+  boxShadow: "0 24px 52px rgba(0,0,0,0.18)",
   backdropFilter: "blur(8px)",
   position: "relative",
   zIndex: 1,
@@ -139,7 +139,7 @@ const input = {
   padding: "12px 12px",
   borderRadius: 12,
   border: "1px solid var(--border)",
-  background: "rgba(8, 18, 33, 0.9)",
+  background: "var(--login-input-bg)",
   color: "var(--text)",
   outline: "none",
 };

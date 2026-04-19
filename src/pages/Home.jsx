@@ -37,7 +37,7 @@ const pieCenterLabel = {
   display: "grid",
   placeItems: "center",
   textAlign: "center",
-  color: "#ffffff",
+  color: "var(--text)",
   fontWeight: 700,
   pointerEvents: "none",
   padding: "0 16px",
@@ -187,7 +187,7 @@ export default function Home() {
 
         {!currentBudgetId ? (
           <div style={{ ...card, padding: 32, textAlign: "center" }}>
-            <p style={{ color: "#94a3b8", marginBottom: 16 }}>
+            <p style={{ color: "var(--text-muted)", marginBottom: 16 }}>
               No budget selected. Create a budget to get started.
             </p>
           </div>
@@ -277,19 +277,20 @@ export default function Home() {
                                 borderRadius: "50%",
                                 background: item.color,
                                 display: "inline-block",
-                                boxShadow: "0 0 0 3px rgba(255,255,255,0.03)",
+                                boxShadow: "0 0 0 3px rgba(0,0,0,0.06)",
                               }}
                             />
-                            <span style={{ color: "#e2e8f0", fontSize: 13 }}>{item.label}</span>
+                            <span style={{ color: "var(--text)", fontSize: 13 }}>{item.label}</span>
                           </div>
                           <span style={{ color: "var(--text-muted)", fontSize: 13 }}>${item.value}</span>
                         </div>
                         <div
                           style={{
-                            background: "rgba(255,255,255,0.05)",
+                            background: "var(--surface-soft)",
                             borderRadius: 999,
                             height: 4,
                             overflow: "hidden",
+                            border: "1px solid var(--border)",
                           }}
                         >
                           <div
@@ -311,7 +312,7 @@ export default function Home() {
             <div style={{ ...card, minHeight: 240 }}>
               <div
                 style={{
-                  color: "#94a3b8",
+                  color: "var(--text-muted)",
                   fontSize: 12,
                   fontWeight: 600,
                   letterSpacing: "0.1em",
@@ -327,8 +328,8 @@ export default function Home() {
                   display: "grid",
                   gridTemplateColumns: "1fr 2fr 1.5fr 1fr",
                   padding: "0 8px 10px",
-                  borderBottom: "1px solid rgba(255,255,255,0.06)",
-                  color: "#64748b",
+                  borderBottom: "1px solid var(--border)",
+                  color: "var(--text-muted)",
                   fontSize: 11,
                   fontWeight: 600,
                   letterSpacing: "0.05em",
@@ -342,7 +343,7 @@ export default function Home() {
               </div>
 
               {sortedTransactions.length === 0 ? (
-                <div style={{ color: "#94a3b8", fontSize: 14, padding: "12px 8px" }}>
+                <div style={{ color: "var(--text-muted)", fontSize: 14, padding: "12px 8px" }}>
                   No transactions yet.
                 </div>
               ) : (
@@ -357,15 +358,15 @@ export default function Home() {
                         padding: "12px 8px",
                         borderBottom:
                           i < sortedTransactions.length - 1
-                            ? "1px solid rgba(255,255,255,0.04)"
+                            ? "1px solid var(--border)"
                             : "none",
                         alignItems: "center",
                       }}
                     >
-                      <span style={{ color: "#64748b", fontSize: 13 }}>
+                      <span style={{ color: "var(--text-muted)", fontSize: 13 }}>
                         {new Date(tx.date).toLocaleDateString()}
                       </span>
-                      <span style={{ color: "#e2e8f0", fontSize: 13 }}>{tx.note}</span>
+                      <span style={{ color: "var(--text)", fontSize: 13 }}>{tx.note}</span>
                       <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span
                           style={{
@@ -377,13 +378,13 @@ export default function Home() {
                             flexShrink: 0,
                           }}
                         />
-                        <span style={{ color: "#94a3b8", fontSize: 13 }}>
+                        <span style={{ color: "var(--text-muted)", fontSize: 13 }}>
                           {meta?.name || "Unknown"}
                         </span>
                       </span>
                       <span
                         style={{
-                          color: "#f1f5f9",
+                          color: "var(--text)",
                           fontSize: 13,
                           textAlign: "right",
                           fontWeight: 500,

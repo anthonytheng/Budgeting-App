@@ -55,7 +55,7 @@ const bgOrnamentA = {
   width: 420,
   height: 420,
   borderRadius: "50%",
-  background: "radial-gradient(circle, rgba(90, 188, 214, 0.14), rgba(90, 188, 214, 0))",
+  background: "radial-gradient(circle, var(--orb-a), transparent)",
   top: -180,
   left: -120,
   pointerEvents: "none",
@@ -66,7 +66,7 @@ const bgOrnamentB = {
   width: 340,
   height: 340,
   borderRadius: "50%",
-  background: "radial-gradient(circle, rgba(77, 174, 203, 0.16), rgba(77, 174, 203, 0))",
+  background: "radial-gradient(circle, var(--orb-b), transparent)",
   right: -120,
   bottom: -120,
   pointerEvents: "none",
@@ -76,7 +76,7 @@ const sidebar = {
   width: 250,
   padding: 18,
   borderRight: "1px solid var(--border)",
-  background: "linear-gradient(180deg, rgba(8, 18, 31, 0.94), rgba(10, 22, 38, 0.82))",
+  background: "var(--surface-strong)",
   backdropFilter: "blur(10px)",
   zIndex: 1,
 };
@@ -124,11 +124,7 @@ const brandTitle = {
   fontFamily: "Space Grotesk, sans-serif",
   fontWeight: 700,
   fontSize: 18,
-};
-
-const brandSubtitle = {
-  color: "var(--text-muted)",
-  fontSize: 12,
+  color: "var(--text)",
 };
 
 const headerDate = {
@@ -137,16 +133,6 @@ const headerDate = {
   fontSize: 13,
   letterSpacing: "0.04em",
   textTransform: "uppercase",
-};
-
-const sidebarHint = {
-  marginTop: 16,
-  padding: 12,
-  borderRadius: 12,
-  color: "var(--text-muted)",
-  background: "var(--surface-soft)",
-  border: "1px solid var(--border)",
-  fontSize: 12,
 };
 
 const navItemStyle = ({ isActive }) => ({
@@ -159,7 +145,7 @@ const navItemStyle = ({ isActive }) => ({
   border: `1px solid ${isActive ? "rgba(131, 200, 219, 0.9)" : "var(--border)"}`,
   background: isActive
     ? "linear-gradient(140deg, #a7d8e6, #76c1d8)"
-    : "rgba(255,255,255,0.02)",
+    : "var(--surface-soft)",
   boxShadow: isActive ? "0 8px 18px rgba(17, 24, 39, 0.35)" : "none",
   fontWeight: isActive ? 800 : 600,
 });

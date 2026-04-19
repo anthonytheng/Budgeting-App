@@ -136,7 +136,7 @@ export default function Calendar() {
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
           <div style={card}>
             {!currentBudgetId && (
-              <div style={{ color: "#94a3b8", marginBottom: 16 }}>
+              <div style={{ color: "var(--text-muted)", marginBottom: 16 }}>
                 No budget selected. Create a budget to see transactions on the calendar.
               </div>
             )}
@@ -210,7 +210,7 @@ export default function Calendar() {
         <div
           style={{
             width: selectedDate ? 320 : 0,
-            background: "var(--bg-0)",
+            background: "var(--surface)",
             borderLeft: "1px solid var(--border)",
             transition: "width 0.3s ease-out",
             display: "flex",
@@ -251,16 +251,16 @@ export default function Calendar() {
           {/* Drawer Content */}
           <div style={{ flex: 1, overflowY: "auto", minWidth: 0 }}>
             {!selectedDate ? (
-              <p style={{ color: "#94a3b8", margin: 0 }}>
+              <p style={{ color: "var(--text-muted)", margin: 0 }}>
                 Click a day in the calendar to view transactions.
               </p>
             ) : selectedDateTransactions.length === 0 ? (
-              <p style={{ color: "#94a3b8", margin: 0 }}>
+              <p style={{ color: "var(--text-muted)", margin: 0 }}>
                 No transactions on this day.
               </p>
             ) : (
               <>
-                <p style={{ color: "#94a3b8", margin: "0 0 16px 0", fontSize: 14 }}>
+                <p style={{ color: "var(--text-muted)", margin: "0 0 16px 0", fontSize: 14 }}>
                   Total: ${selectedDateTotal.toFixed(2)}
                 </p>
 
@@ -270,19 +270,19 @@ export default function Calendar() {
                       key={tx.id}
                       style={{
                         padding: 12,
-                        background: "rgba(255,255,255,0.03)",
+                        background: "var(--surface-soft)",
                         borderRadius: 8,
-                        border: "1px solid rgba(255,255,255,0.05)",
+                        border: "1px solid var(--border)",
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "flex-start",
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: 500, marginBottom: 4 }}>
+                        <div style={{ fontWeight: 500, marginBottom: 4, color: "var(--text)" }}>
                           {tx.note || "Untitled transaction"}
                         </div>
-                        <div style={{ fontSize: 12, color: "#97a9bf" }}>
+                        <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
                           {getCategoryName(tx.categoryId)}
                         </div>
                       </div>
@@ -290,7 +290,7 @@ export default function Calendar() {
                         style={{
                           fontWeight: 600,
                           fontSize: 16,
-                          color: "#fca5a5",
+                          color: "var(--danger)",
                         }}
                       >
                         ${tx.amount.toFixed(2)}
@@ -320,7 +320,7 @@ const headerRow = {
 };
 
 const navButton = {
-  background: "rgba(255,255,255,0.04)",
+  background: "var(--surface-soft)",
   border: "1px solid var(--border)",
   color: "var(--text)",
   width: 40,
@@ -374,10 +374,11 @@ const dayCell = {
   alignItems: "center",
   justifyContent: "center",
   borderRadius: 8,
-  background: "rgba(255,255,255,0.03)",
+  background: "var(--surface-soft)",
   border: "1px solid var(--border)",
   position: "relative",
   transition: "all 0.2s",
+  color: "var(--text)",
 };
 
 const todayCell = {

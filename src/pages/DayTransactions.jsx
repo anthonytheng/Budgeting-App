@@ -4,8 +4,8 @@ import DesktopLayout from "../components/DesktopLayout";
 import { api } from "../api/client";
 
 const card = {
-  background: "#0f172a",
-  border: "1px solid rgba(255,255,255,0.08)",
+  background: "var(--surface)",
+  border: "1px solid var(--border)",
   borderRadius: 16,
   padding: 16,
 };
@@ -13,9 +13,9 @@ const card = {
 const button = {
   padding: "8px 16px",
   borderRadius: 8,
-  border: "1px solid rgba(255,255,255,0.2)",
-  background: "rgba(59, 130, 246, 0.1)",
-  color: "#60a5fa",
+  border: "1px solid var(--border)",
+  background: "var(--surface)",
+  color: "var(--accent)",
   cursor: "pointer",
   fontSize: 14,
   fontWeight: 500,
@@ -90,7 +90,7 @@ export default function DayTransactions() {
     return (
       <DesktopLayout title="Transactions">
         <div style={card}>
-          <p style={{ color: "#94a3b8" }}>Loading...</p>
+          <p style={{ color: "var(--text-muted)" }}>Loading...</p>
         </div>
       </DesktopLayout>
     );
@@ -107,12 +107,12 @@ export default function DayTransactions() {
           <h2 style={{ margin: "0 0 8px 0", fontSize: 20 }}>
             {formatDate(date)}
           </h2>
-          <p style={{ color: "#94a3b8", margin: "0 0 16px 0", fontSize: 14 }}>
+          <p style={{ color: "var(--text-muted)", margin: "0 0 16px 0", fontSize: 14 }}>
             Total: ${getDayTotal().toFixed(2)}
           </p>
 
           {transactions.length === 0 ? (
-            <p style={{ color: "#94a3b8", textAlign: "center", padding: 32 }}>
+            <p style={{ color: "var(--text-muted)", textAlign: "center", padding: 32 }}>
               No transactions on this day.
             </p>
           ) : (
@@ -122,19 +122,19 @@ export default function DayTransactions() {
                   key={tx.id}
                   style={{
                     padding: 12,
-                    background: "rgba(255,255,255,0.03)",
+                    background: "var(--surface-soft)",
                     borderRadius: 8,
-                    border: "1px solid rgba(255,255,255,0.05)",
+                    border: "1px solid var(--border)",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
                   <div>
-                    <div style={{ fontWeight: 500, marginBottom: 4 }}>
+                    <div style={{ fontWeight: 500, marginBottom: 4, color: "var(--text)" }}>
                       {tx.note}
                     </div>
-                    <div style={{ color: "#94a3b8", fontSize: 12 }}>
+                    <div style={{ color: "var(--text-muted)", fontSize: 12 }}>
                       {categories[tx.categoryId] || "Unknown"}
                     </div>
                   </div>
@@ -142,7 +142,7 @@ export default function DayTransactions() {
                     style={{
                       fontWeight: 600,
                       fontSize: 16,
-                      color: "#fca5a5",
+                      color: "var(--danger)",
                     }}
                   >
                     ${tx.amount.toFixed(2)}
