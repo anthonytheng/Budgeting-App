@@ -23,6 +23,493 @@ const palette = [
 
 const pieheight = 280;
 const piewidth = 400;
+const panels = ["Top Categories", "Goals"];
+
+function ButtonToggle({ active, onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        background: active ? "var(--surface-soft)" : "transparent",
+        border: active ? "1px solid var(--border)" : "1px solid transparent",
+        borderRadius: 8,
+        color: active ? "var(--text)" : "var(--text-muted)",
+        cursor: "pointer",
+        fontSize: 12,
+        fontWeight: 600,
+        letterSpacing: "0.05em",
+        padding: "5px 12px",
+        textTransform: "uppercase",
+        transition: "all 0.15s ease",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ToggleGroup({ active, setActive }) {
+  return (
+    <div style={{ display: "flex", gap: 4 }}>
+      {panels.map((type) => (
+        <ButtonToggle key={type} active={active === type} onClick={() => setActive(type)}>
+          {type}
+        </ButtonToggle>
+      ))}
+    </div>
+  );
+}
+
+function loadGoals(budgetId) {
+  try {
+    const raw = localStorage.getItem(`goals:${budgetId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveGoals(budgetId, goals) {
+  localStorage.setItem(`goals:${budgetId}`, JSON.stringify(goals));
+}
+
+function newId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+const modalOverlay = {
+  position: "fixed",
+  inset: 0,
+  background: "rgba(0,0,0,0.7)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1000,
+};
+
+const modalBox = {
+  background: "var(--surface)",
+  borderRadius: 16,
+  padding: 24,
+  width: 360,
+  border: "1px solid var(--border)",
+};
+
+const modalInput = {
+  width: "100%",
+  padding: "10px 12px",
+  borderRadius: 8,
+  border: "1px solid var(--border)",
+  background: "var(--surface-soft)",
+  color: "var(--text)",
+  fontSize: 14,
+  marginTop: 6,
+  boxSizing: "border-box",
+};
+
+const modalLabel = {
+  display: "block",
+  color: "var(--text-muted)",
+  fontSize: 13,
+  fontWeight: 500,
+  marginTop: 16,
+};
+
+const modalPrimaryBtn = (enabled) => ({
+  padding: "8px 16px",
+  borderRadius: 8,
+  border: "none",
+  background: enabled ? "var(--success)" : "var(--surface-soft)",
+  color: enabled ? "#041012" : "var(--text-muted)",
+  cursor: enabled ? "pointer" : "default",
+  fontSize: 13,
+  fontWeight: 700,
+});
+
+const modalSecondaryBtn = {
+  padding: "8px 14px",
+  borderRadius: 8,
+  border: "1px solid var(--border)",
+  background: "transparent",
+  color: "var(--text-muted)",
+  cursor: "pointer",
+  fontSize: 13,
+};
+
+const modalDangerBtn = {
+  padding: "8px 14px",
+  borderRadius: 8,
+  border: "1px solid rgba(239,68,68,0.4)",
+  background: "rgba(239,68,68,0.1)",
+  color: "#ef4444",
+  cursor: "pointer",
+  fontSize: 13,
+  fontWeight: 600,
+  marginRight: "auto",
+};
+
+function calcEta(remaining, monthlyAllocation) {
+  if (!monthlyAllocation || monthlyAllocation <= 0 || remaining <= 0) return null;
+  const months = Math.ceil(remaining / monthlyAllocation);
+  const now = new Date();
+  const eta = new Date(now.getFullYear(), now.getMonth() + months, 1);
+  return eta.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+function GoalFormModal({ goal, onSave, onDelete, onClose }) {
+  const isEdit = !!goal;
+  const [name, setName] = useState(goal?.name ?? "");
+  const [target, setTarget] = useState(goal ? String(goal.target) : "");
+  const [monthlyAllocation, setMonthlyAllocation] = useState(
+    goal?.monthlyAllocation ? String(goal.monthlyAllocation) : ""
+  );
+
+  const canSave = name.trim() && target && parseFloat(target) > 0;
+
+  const allocationVal = parseFloat(monthlyAllocation);
+  const remaining = Math.max(parseFloat(target || 0) - (goal?.saved ?? 0), 0);
+  const eta = calcEta(remaining, allocationVal);
+
+  return (
+    <div style={modalOverlay} onClick={onClose}>
+      <div style={modalBox} onClick={(e) => e.stopPropagation()}>
+        <h2 style={{ margin: "0 0 4px 0", fontSize: 18, color: "var(--text)" }}>
+          {isEdit ? "Edit Goal" : "New Goal"}
+        </h2>
+        <p style={{ margin: "0 0 4px 0", fontSize: 13, color: "var(--text-muted)" }}>
+          {isEdit ? "Update your savings goal." : "What are you saving toward?"}
+        </p>
+
+        <label style={modalLabel}>Goal Name</label>
+        <input
+          style={modalInput}
+          placeholder="e.g. New Laptop"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <label style={modalLabel}>Target Amount</label>
+        <input
+          type="number"
+          min="1"
+          step="0.01"
+          style={modalInput}
+          placeholder="e.g. 1000"
+          value={target}
+          onChange={(e) => setTarget(e.target.value)}
+        />
+
+        <label style={modalLabel}>Monthly Allocation (optional)</label>
+        <input
+          type="number"
+          min="1"
+          step="0.01"
+          style={modalInput}
+          placeholder="e.g. 200"
+          value={monthlyAllocation}
+          onChange={(e) => setMonthlyAllocation(e.target.value)}
+        />
+
+        {eta && (
+          <div
+            style={{
+              marginTop: 8,
+              padding: "7px 10px",
+              borderRadius: 6,
+              background: "rgba(20,184,166,0.08)",
+              border: "1px solid rgba(20,184,166,0.2)",
+              fontSize: 12,
+              color: "var(--success)",
+            }}
+          >
+            {"At $"}
+            {allocationVal.toLocaleString()}
+            {" a month you'll reach your goal by "}
+            {eta}
+          </div>
+        )}
+
+        <div style={{ display: "flex", gap: 8, marginTop: 24, alignItems: "center" }}>
+          {isEdit && (
+            <button style={modalDangerBtn} onClick={() => onDelete(goal.id)}>
+              Delete
+            </button>
+          )}
+          <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+            <button style={modalSecondaryBtn} onClick={onClose}>Cancel</button>
+            <button
+              style={modalPrimaryBtn(canSave)}
+              onClick={() =>
+                canSave &&
+                onSave({
+                  id: goal?.id ?? newId(),
+                  name: name.trim(),
+                  target: parseFloat(target),
+                  monthlyAllocation: allocationVal > 0 ? allocationVal : null,
+                  saved: goal?.saved ?? 0,
+                })
+              }
+            >
+              {isEdit ? "Save" : "Create Goal"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContributeModal({ goal, onSave, onClose }) {
+  const [amount, setAmount] = useState("");
+  const remaining = goal.target - goal.saved;
+  const canSave = amount && parseFloat(amount) > 0;
+
+  return (
+    <div style={modalOverlay} onClick={onClose}>
+      <div style={modalBox} onClick={(e) => e.stopPropagation()}>
+        <h2 style={{ margin: "0 0 4px 0", fontSize: 18, color: "var(--text)" }}>
+          Add Contribution
+        </h2>
+        <p style={{ margin: "0 0 4px 0", fontSize: 13, color: "var(--text-muted)" }}>
+          {goal.name} · ${goal.saved.toLocaleString()} saved of ${goal.target.toLocaleString()}
+        </p>
+
+        <label style={modalLabel}>Amount</label>
+        <input
+          type="number"
+          min="0.01"
+          step="0.01"
+          style={modalInput}
+          placeholder={`Up to $${remaining.toLocaleString()} remaining`}
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          autoFocus
+        />
+
+        <div style={{ display: "flex", gap: 8, marginTop: 24, justifyContent: "flex-end" }}>
+          <button style={modalSecondaryBtn} onClick={onClose}>Cancel</button>
+          <button
+            style={modalPrimaryBtn(canSave)}
+            onClick={() => canSave && onSave(goal.id, parseFloat(amount))}
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GoalsPanel({ budgetId }) {
+  const [goals, setGoals] = useState(() => loadGoals(budgetId));
+  const [showForm, setShowForm] = useState(false);
+  const [editGoal, setEditGoal] = useState(null);
+  const [contributeGoal, setContributeGoal] = useState(null);
+
+  useEffect(() => {
+    saveGoals(budgetId, goals);
+  }, [goals, budgetId]);
+
+  useEffect(() => {
+    setGoals(loadGoals(budgetId));
+  }, [budgetId]);
+
+  const handleSave = (goal) => {
+    setGoals((prev) =>
+      prev.some((g) => g.id === goal.id)
+        ? prev.map((g) => (g.id === goal.id ? goal : g))
+        : [...prev, goal]
+    );
+    setShowForm(false);
+    setEditGoal(null);
+  };
+
+  const handleDelete = (id) => {
+    setGoals((prev) => prev.filter((g) => g.id !== id));
+    setShowForm(false);
+    setEditGoal(null);
+  };
+
+  const handleContribute = (id, amount) => {
+    setGoals((prev) =>
+      prev.map((g) =>
+        g.id === id ? { ...g, saved: Math.min(g.saved + amount, g.target) } : g
+      )
+    );
+    setContributeGoal(null);
+  };
+
+  return (
+    <>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+        <button
+          onClick={() => {
+            setEditGoal(null);
+            setShowForm(true);
+          }}
+          style={{
+            padding: "4px 10px",
+            borderRadius: 6,
+            border: "1px solid rgba(20,184,166,0.5)",
+            background: "rgba(20,184,166,0.12)",
+            color: "var(--success)",
+            cursor: "pointer",
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          + New Goal
+        </button>
+      </div>
+
+      {goals.length === 0 ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "70%",
+          }}
+        >
+          <span style={{ color: "var(--text-muted)", textAlign: "center" }}>No goals yet.</span>
+        </div>
+      ) : (
+        <div style={{ overflowY: "auto", maxHeight: 210, paddingRight: 4 }}>
+          {goals.map((g, i) => {
+            const pct = Math.min((g.saved / g.target) * 100, 100);
+            const done = g.saved >= g.target;
+            const color = done ? "var(--success)" : palette[i % palette.length];
+
+            return (
+              <div key={g.id} style={{ marginBottom: 14 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 5,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: color,
+                        display: "inline-block",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span style={{ color: "var(--text)", fontSize: 13, fontWeight: 500 }}>{g.name}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {!done && (
+                      <button
+                        onClick={() => setContributeGoal(g)}
+                        style={{
+                          padding: "2px 8px",
+                          borderRadius: 5,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          border: "1px solid rgba(20,184,166,0.4)",
+                          background: "rgba(20,184,166,0.1)",
+                          color: "var(--success)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        + Add
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        setEditGoal(g);
+                        setShowForm(true);
+                      }}
+                      style={{
+                        padding: "2px 8px",
+                        borderRadius: 5,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        border: "1px solid var(--border)",
+                        background: "transparent",
+                        color: "var(--text-muted)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    background: "var(--surface-soft)",
+                    borderRadius: 4,
+                    height: 6,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: color,
+                      width: `${pct}%`,
+                      height: "100%",
+                      borderRadius: 4,
+                      transition: "width 0.4s ease",
+                    }}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    marginTop: 4,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                    {g.monthlyAllocation && !done
+                      ? `$${g.monthlyAllocation.toLocaleString()}/mo allocated`
+                      : ""}
+                  </span>
+                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                    <span style={{ color: done ? "var(--success)" : "var(--text)", fontWeight: 600 }}>
+                      ${g.saved.toLocaleString()}
+                    </span>
+                    {" / "}${g.target.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {showForm && (
+        <GoalFormModal
+          goal={editGoal}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          onClose={() => {
+            setShowForm(false);
+            setEditGoal(null);
+          }}
+        />
+      )}
+
+      {contributeGoal && (
+        <ContributeModal
+          goal={contributeGoal}
+          onSave={handleContribute}
+          onClose={() => setContributeGoal(null)}
+        />
+      )}
+    </>
+  );
+}
 
 const pieWrap = {
   position: "relative",
@@ -94,6 +581,7 @@ const readHomeData = () => {
 
 export default function Home() {
   const [homeData, setHomeData] = useState(() => readHomeData());
+  const [activePanel, setActivePanel] = useState(panels[0]);
   const { categories, transactions, currentBudgetId } = homeData;
 
   useEffect(() => {
@@ -251,61 +739,70 @@ export default function Home() {
               </div>
 
               <div style={{ ...card, minHeight: 320 }}>
-                <div style={metricLabel}>Top Categories</div>
-                {sortedData.length === 0 ? (
-                  <div style={{ color: "var(--text-muted)", fontSize: 14 }}>
-                    No transactions this month yet.
-                  </div>
-                ) : (
-                  sortedData.map((item) => {
-                    const pct = Math.round((item.value / totalSpent) * 100);
-                    return (
-                      <div key={item.id} style={{ marginBottom: 14 }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: 6,
-                          }}
-                        >
-                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span
-                              style={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: "50%",
-                                background: item.color,
-                                display: "inline-block",
-                                boxShadow: "0 0 0 3px rgba(0,0,0,0.06)",
-                              }}
-                            />
-                            <span style={{ color: "var(--text)", fontSize: 13 }}>{item.label}</span>
-                          </div>
-                          <span style={{ color: "var(--text-muted)", fontSize: 13 }}>${item.value}</span>
-                        </div>
-                        <div
-                          style={{
-                            background: "var(--surface-soft)",
-                            borderRadius: 999,
-                            height: 4,
-                            overflow: "hidden",
-                            border: "1px solid var(--border)",
-                          }}
-                        >
-                          <div
-                            style={{
-                              background: item.color,
-                              width: `${pct}%`,
-                              height: "100%",
-                              borderRadius: 999,
-                            }}
-                          />
-                        </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <ToggleGroup active={activePanel} setActive={setActivePanel} />
+                </div>
+
+                {activePanel === "Top Categories" && (
+                  <>
+                    {sortedData.length === 0 ? (
+                      <div style={{ color: "var(--text-muted)", fontSize: 14 }}>
+                        No transactions this month yet.
                       </div>
-                    );
-                  })
+                    ) : (
+                      sortedData.map((item) => {
+                        const pct = Math.round((item.value / totalSpent) * 100);
+                        return (
+                          <div key={item.id} style={{ marginBottom: 14 }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginBottom: 6,
+                              }}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                <span
+                                  style={{
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: "50%",
+                                    background: item.color,
+                                    display: "inline-block",
+                                    boxShadow: "0 0 0 3px rgba(0,0,0,0.06)",
+                                  }}
+                                />
+                                <span style={{ color: "var(--text)", fontSize: 13 }}>{item.label}</span>
+                              </div>
+                              <span style={{ color: "var(--text-muted)", fontSize: 13 }}>${item.value}</span>
+                            </div>
+                            <div
+                              style={{
+                                background: "var(--surface-soft)",
+                                borderRadius: 999,
+                                height: 4,
+                                overflow: "hidden",
+                                border: "1px solid var(--border)",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  background: item.color,
+                                  width: `${pct}%`,
+                                  height: "100%",
+                                  borderRadius: 999,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </>
                 )}
+
+                {activePanel === "Goals" && <GoalsPanel budgetId={currentBudgetId} />}
               </div>
             </div>
 

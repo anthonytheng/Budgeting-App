@@ -1,27 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { api } from "../api/client"; // TEST LOGIN: not using backend yet
 
-export default function Login() {
+export default function CreateAccount() {
   const nav = useNavigate();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  async function onSubmit(e) {
+  function onSubmit(e) {
     e.preventDefault();
     setError("");
 
-    // TEST LOGIN (temporary)
-    if (email === "admin" && password === "admin") {
-      nav("/home");
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+      setError("Please complete all fields.");
       return;
     }
 
-    setError("Invalid username or password.");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    // TODO: call backend API to create account
+    alert("Account created. Please sign in.");
+    nav("/login");
   }
 
   return (
@@ -30,15 +35,26 @@ export default function Login() {
       <div style={orbB} />
 
       <form onSubmit={onSubmit} style={card}>
-        <h1 style={{ marginTop: 0, marginBottom: 6, fontSize: 34 }}>Sign in</h1>
+        <h1 style={{ marginTop: 0, marginBottom: 6, fontSize: 34 }}>
+          Create Account
+        </h1>
 
         <label style={label}>Username</label>
         <input
           style={input}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Username"
           autoComplete="name"
+        />
+
+        <label style={label}>Email</label>
+        <input
+          style={input}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="user@example.com"
+          autoComplete="email"
         />
 
         <label style={label}>Password</label>
@@ -47,33 +63,29 @@ export default function Login() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          autoComplete="current-password"
+          placeholder="Create a password"
+          autoComplete="new-password"
+        />
+
+        <label style={label}>Confirm password</label>
+        <input
+          style={input}
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="Re-enter your password"
+          autoComplete="new-password"
         />
 
         {error && <div style={errorStyle}>{error}</div>}
 
-        <button type="submit" disabled={loading} style={button}>
-          {loading ? "Signing in..." : "Sign in"}
+        <button type="submit" style={button}>
+          Create account
         </button>
 
-        <div style={footerRow}>
-          <button
-            type="button"
-            onClick={() => nav("/forgot-password")}
-            style={linkBtn}
-          >
-            Forgot password?
-          </button>
-
-          <button
-            type="button"
-            onClick={() => nav("/create-account")}
-            style={linkBtn}
-          >
-            Create account
-          </button>
-        </div>
+        <button type="button" onClick={() => nav("/login")} style={linkBtn}>
+          Back to sign in
+        </button>
       </form>
     </div>
   );
@@ -87,7 +99,7 @@ const page = {
   alignItems: "center",
   padding: 24,
   background:
-    "radial-gradient(circle at 14% 12%, var(--orb-a), transparent 36%), radial-gradient(circle at 82% 18%, var(--orb-b), transparent 38%), linear-gradient(130deg, var(--login-bg-start), var(--login-bg-mid) 55%, var(--login-bg-end))",
+    "radial-gradient(circle at 14% 12%, rgba(45, 212, 191, 0.2), transparent 36%), radial-gradient(circle at 82% 18%, rgba(56, 189, 248, 0.2), transparent 38%), linear-gradient(130deg, #07101f, #0f1f39 55%, #122443)",
   color: "var(--text)",
   position: "relative",
   overflow: "hidden",
@@ -98,7 +110,7 @@ const orbA = {
   width: 280,
   height: 280,
   borderRadius: "50%",
-  background: "radial-gradient(circle, var(--orb-a), transparent)",
+  background: "radial-gradient(circle, rgba(45, 212, 191, 0.2), rgba(45, 212, 191, 0))",
   top: -80,
   right: -80,
 };
@@ -108,19 +120,19 @@ const orbB = {
   width: 340,
   height: 340,
   borderRadius: "50%",
-  background: "radial-gradient(circle, var(--orb-b), transparent)",
+  background: "radial-gradient(circle, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0))",
   left: -120,
   bottom: -120,
 };
 
 const card = {
   width: "100%",
-  maxWidth: 420,
+  maxWidth: 460,
   background: "var(--surface)",
   border: "1px solid var(--border)",
   borderRadius: 20,
   padding: 24,
-  boxShadow: "0 24px 52px rgba(0,0,0,0.18)",
+  boxShadow: "0 24px 52px rgba(0,0,0,0.38)",
   backdropFilter: "blur(8px)",
   position: "relative",
   zIndex: 1,
@@ -139,7 +151,7 @@ const input = {
   padding: "12px 12px",
   borderRadius: 12,
   border: "1px solid var(--border)",
-  background: "var(--login-input-bg)",
+  background: "rgba(8, 18, 33, 0.9)",
   color: "var(--text)",
   outline: "none",
 };
@@ -163,19 +175,13 @@ const errorStyle = {
   fontWeight: 600,
 };
 
-const footerRow = {
-  marginTop: 12,
-  display: "flex",
-  justifyContent: "space-between",
-  gap: 12,
-};
-
 const linkBtn = {
+  marginTop: 14,
+  width: "100%",
   background: "transparent",
   border: "none",
   color: "var(--text-muted)",
   cursor: "pointer",
-  padding: 0,
   textDecoration: "underline",
   fontSize: 13,
 };

@@ -1,27 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { api } from "../api/client"; // TEST LOGIN: not using backend yet
 
-export default function Login() {
+export default function ForgotPassword() {
   const nav = useNavigate();
-
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
-  async function onSubmit(e) {
+  function onSubmit(e) {
     e.preventDefault();
     setError("");
 
-    // TEST LOGIN (temporary)
-    if (email === "admin" && password === "admin") {
-      nav("/home");
+    if (!email.trim()) {
+      setError("Please enter your email.");
       return;
     }
 
-    setError("Invalid username or password.");
+    // Temporary frontend-only flow until backend reset endpoint is added.
+    setSubmitted(true);
   }
 
   return (
@@ -30,50 +26,36 @@ export default function Login() {
       <div style={orbB} />
 
       <form onSubmit={onSubmit} style={card}>
-        <h1 style={{ marginTop: 0, marginBottom: 6, fontSize: 34 }}>Sign in</h1>
+        <h1 style={{ marginTop: 0, marginBottom: 6, fontSize: 34 }}>
+          Forgot Password
+        </h1>
+        <p style={{ marginTop: 0, marginBottom: 14, color: "var(--text-muted)" }}>
+          Enter your email and we will send you a password reset link.
+        </p>
 
-        <label style={label}>Username</label>
+        <label style={label}>Email</label>
         <input
           style={input}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Username"
-          autoComplete="name"
-        />
-
-        <label style={label}>Password</label>
-        <input
-          style={input}
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          autoComplete="current-password"
+          placeholder="user@email.com"
+          autoComplete="email"
         />
 
         {error && <div style={errorStyle}>{error}</div>}
+        {submitted && (
+          <div style={successStyle}>
+            Password reset link sent to {email}.
+          </div>
+        )}
 
-        <button type="submit" disabled={loading} style={button}>
-          {loading ? "Signing in..." : "Sign in"}
+        <button type="submit" style={button}>
+          Send reset link
         </button>
 
-        <div style={footerRow}>
-          <button
-            type="button"
-            onClick={() => nav("/forgot-password")}
-            style={linkBtn}
-          >
-            Forgot password?
-          </button>
-
-          <button
-            type="button"
-            onClick={() => nav("/create-account")}
-            style={linkBtn}
-          >
-            Create account
-          </button>
-        </div>
+        <button type="button" onClick={() => nav("/login")} style={linkBtn}>
+          Back to sign in
+        </button>
       </form>
     </div>
   );
@@ -163,19 +145,20 @@ const errorStyle = {
   fontWeight: 600,
 };
 
-const footerRow = {
-  marginTop: 12,
-  display: "flex",
-  justifyContent: "space-between",
-  gap: 12,
+const successStyle = {
+  marginTop: 10,
+  color: "var(--success)",
+  fontSize: 13,
+  fontWeight: 600,
 };
 
 const linkBtn = {
+  marginTop: 14,
+  width: "100%",
   background: "transparent",
   border: "none",
   color: "var(--text-muted)",
   cursor: "pointer",
-  padding: 0,
   textDecoration: "underline",
   fontSize: 13,
 };
