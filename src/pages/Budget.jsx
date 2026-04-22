@@ -82,7 +82,7 @@ const errorText = {
   marginTop: 8,
 };
 
-const isValidCurrencyAmount = (value) => /^\d+\.\d{2}$/.test(value.trim());
+const isValidCurrencyAmount = (value) => /^\d+(\.\d{1,2})?$/.test(value.trim());
 
 export default function Budget() {
   const [budgets, setBudgets] = useState([]);
