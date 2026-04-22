@@ -651,12 +651,12 @@ export default function Home() {
         >
           <div style={card}>
             <div style={metricLabel}>This Month Spent</div>
-            <div style={metricValue}>${totalSpent.toLocaleString()}</div>
+            <div style={metricValue}>${totalSpent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2, })}</div>
           </div>
 
           <div style={card}>
             <div style={metricLabel}>Income</div>
-            <div style={metricValue}>${income.toLocaleString()}</div>
+            <div style={metricValue}>${income.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2, })}</div>
           </div>
 
           <div style={card}>
@@ -668,7 +668,7 @@ export default function Home() {
                 fontWeight: 700,
               }}
             >
-              {net >= 0 ? "+" : ""}${net.toLocaleString()}
+              {net >= 0 ? "+" : ""}${net.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2, })}
             </div>
           </div>
         </div>
@@ -730,7 +730,7 @@ export default function Home() {
                             letterSpacing: "-0.02em",
                           }}
                         >
-                          ${totalSpent.toLocaleString()}
+                          ${totalSpent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2, })}
                         </div>
                       </div>
                     </div>
