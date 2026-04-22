@@ -668,7 +668,7 @@ export default function Home() {
                 fontWeight: 700,
               }}
             >
-              {net >= 0 ? "+" : ""}${net.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2, })}
+              {net >= 0 ? "+" : "-"}${Math.abs(net).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2, })}
             </div>
           </div>
         </div>
@@ -887,7 +887,7 @@ export default function Home() {
                           fontWeight: 500,
                         }}
                       >
-                        -${tx.amount}
+                        -${tx.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2, })}
                       </span>
                     </div>
                   );
